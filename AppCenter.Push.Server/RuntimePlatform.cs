@@ -49,7 +49,7 @@ namespace AppCenter.Push.Server
                 return true;
             }
 
-            return string.Equals(this.value, other.value, StringComparison.InvariantCultureIgnoreCase);
+            return string.Equals(this.value, other.value, StringComparison.OrdinalIgnoreCase);
         }
 
         public override bool Equals(object obj)
@@ -69,12 +69,12 @@ namespace AppCenter.Push.Server
                 return false;
             }
 
-            return this.Equals((RuntimePlatform)obj);
+            return Equals((RuntimePlatform)obj);
         }
 
         public override int GetHashCode()
         {
-            return (this.value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(this.value) : 0);
+            return (this.value != null ? this.value.ToLowerInvariant().GetHashCode() : 0);
         }
 
         public static bool operator ==(RuntimePlatform left, RuntimePlatform right)
