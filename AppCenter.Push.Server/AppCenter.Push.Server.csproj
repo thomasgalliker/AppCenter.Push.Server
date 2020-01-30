@@ -1,49 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Server API for Microsoft's AppCenter.Push</Description>
-    <AssemblyTitle>AppCenter.Push.Server</AssemblyTitle>
-    <VersionPrefix>1.0.0</VersionPrefix>
-    <Version>1.0.0</Version>
-    <Authors>Thomas Galliker</Authors>
-    <TargetFrameworks>netstandard1.0;netstandard2.0;</TargetFrameworks>
-    <AssemblyName>AppCenter.Push.Server</AssemblyName>
-    <PackageId>AppCenter.Push.Server</PackageId>
-    <PackageTags>AppCenter.Push.Server;push;notification;appcenter;server;api;sdk</PackageTags>
-    <PackageIconUrl>https://raw.githubusercontent.com/thomasgalliker/AppCenter.Push.Server/develop/logo.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/thomasgalliker/AppCenter.Push.Server</PackageProjectUrl>
-    <PackageLicenseUrl>http://opensource.org/licenses/Apache-2.0</PackageLicenseUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/thomasgalliker/AppCenter.Push.Server</RepositoryUrl>
-    <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
-    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.0' ">$(PackageTargetFallback);netcoreapp1.0</PackageTargetFallback>
-    <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.0' ">1.6.1</NetStandardImplicitPackageVersion>
-    <SignAssembly>True</SignAssembly>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
-    <DefineConstants>$(DefineConstants);NET40</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <DefineConstants>$(DefineConstants);NET45</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <ApplicationIcon />
-    <OutputType>Library</OutputType>
-    <StartupObject />
-    <Company>superdev GmbH</Company>
-    <Product>AppCenter.Push.Server</Product>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <RootNamespace>AppCenter.Push.Server</RootNamespace>
-    <PackageReleaseNotes>1.0.0
-- Initial release</PackageReleaseNotes>
-    <Copyright>Copyright 2018</Copyright>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <Compile Remove="Model\**" />
+    <EmbeddedResource Remove="Model\**" />
+    <None Remove="Model\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="AppCenter.Push.Server.csproj.DotSettings" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
 </Project>
