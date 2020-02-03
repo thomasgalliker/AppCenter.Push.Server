@@ -89,7 +89,7 @@ namespace AppCenter.Push.Server.Console
             Console.WriteLine("");
             Console.WriteLine($"Enter UserIds:");
             var userIdsInput = Console.ReadLine();
-            var userIds = userIdsInput.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+            var userIds = userIdsInput?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
 
             Console.WriteLine("");
             Console.WriteLine("Press [Enter] to send push notifications: ");

@@ -61,11 +61,6 @@ namespace AppCenter.Push.Server
             this.logger.Log(LogLevel.Debug, "SendPushNotificationAsync");
             var pushResponses = new List<AppCenterPushResponse>();
 
-            //if (!this.appCenterConfiguration.AppNames.TryGetValue(target.TargetDevicePlatform, out var appName, StringComparison.InvariantCultureIgnoreCase))
-            //{
-            //    this.logger.Log(LogLevel.Warning, "App Center app name not found for " + target.TargetDevicePlatform);
-            //}
-
             var organizationName = this.appCenterConfiguration.OrganizationName;
             var apiToken = this.appCenterConfiguration.ApiToken;
             var appNames = this.appCenterConfiguration.AppNames;
