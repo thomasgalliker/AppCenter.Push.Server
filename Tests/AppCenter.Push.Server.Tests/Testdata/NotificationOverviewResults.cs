@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -34,7 +35,8 @@ namespace AppCenter.Push.Server.Tests.Testdata
                     Name = $"name_{i}",
                     PnsSendFailure = 1,
                     PnsSendSuccess = 2,
-                    //SendTime = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    SendTime = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                    State = NotificationState.Completed
                 };
             }
         }
@@ -56,10 +58,10 @@ namespace AppCenter.Push.Server.Tests.Testdata
                         NotificationId = "notification_id_test_0",
                         Name = "name_0",
                         NotificationTarget = null,
-                        //SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                        SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
                         PnsSendFailure = 1,
                         PnsSendSuccess = 2,
-                        //State = NotificationState.Unknown,
+                        State = NotificationState.Completed,
                         RuntimePlatform = RuntimePlatform.Android
                     },
                     new NotificationOverviewResult
@@ -67,10 +69,10 @@ namespace AppCenter.Push.Server.Tests.Testdata
                         NotificationId = "notification_id_test_1",
                         Name = "name_1",
                         NotificationTarget = null,
-                        //SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                        SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
                         PnsSendFailure = 1,
                         PnsSendSuccess = 2,
-                        //State = NotificationState.Unknown,
+                        State = NotificationState.Completed,
                         RuntimePlatform = RuntimePlatform.Android
                     },
                     new NotificationOverviewResult
@@ -78,10 +80,10 @@ namespace AppCenter.Push.Server.Tests.Testdata
                         NotificationId = "notification_id_test_2",
                         Name = "name_2",
                         NotificationTarget = null,
-                        //SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                        SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
                         PnsSendFailure = 1,
                         PnsSendSuccess = 2,
-                        //State = NotificationState.Unknown,
+                        State = NotificationState.Completed,
                         RuntimePlatform = RuntimePlatform.Android
                     },
                     new NotificationOverviewResult
@@ -89,10 +91,10 @@ namespace AppCenter.Push.Server.Tests.Testdata
                         NotificationId = "notification_id_test_0",
                         Name = "name_0",
                         NotificationTarget = null,
-                        //SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                        SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
                         PnsSendFailure = 1,
                         PnsSendSuccess = 2,
-                        // State = NotificationState.Unknown,
+                         State = NotificationState.Completed,
                         RuntimePlatform = RuntimePlatform.iOS
                     },
                     new NotificationOverviewResult
@@ -100,10 +102,10 @@ namespace AppCenter.Push.Server.Tests.Testdata
                         NotificationId = "notification_id_test_1",
                         Name = "name_1",
                         NotificationTarget = null,
-                        //SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                        SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
                         PnsSendFailure = 1,
                         PnsSendSuccess = 2,
-                        //State = NotificationState.Unknown,
+                        State = NotificationState.Completed,
                         RuntimePlatform = RuntimePlatform.iOS
                     },
                     new NotificationOverviewResult
@@ -111,10 +113,10 @@ namespace AppCenter.Push.Server.Tests.Testdata
                         NotificationId = "notification_id_test_2",
                         Name = "name_2",
                         NotificationTarget = null,
-                        //SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                        SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
                         PnsSendFailure = 1,
                         PnsSendSuccess = 2,
-                        //State = NotificationState.Unknown,
+                        State = NotificationState.Completed,
                         RuntimePlatform = RuntimePlatform.iOS
                     }
                 }

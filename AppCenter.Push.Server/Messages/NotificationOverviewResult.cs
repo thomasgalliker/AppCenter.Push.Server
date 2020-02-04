@@ -19,7 +19,7 @@ namespace AppCenter.Push.Server.Messages
         public AppCenterPushTarget NotificationTarget { get; set; }
 
         [JsonProperty(PropertyName = "send_time")]
-        public string SendTime { get; set; }
+        public DateTime? SendTime { get; set; }
 
         [JsonProperty(PropertyName = "pns_send_failure")]
         public int? PnsSendFailure { get; set; }
@@ -27,13 +27,8 @@ namespace AppCenter.Push.Server.Messages
         [JsonProperty(PropertyName = "pns_send_success")]
         public int? PnsSendSuccess { get; set; }
 
-        /// <summary>
-        ///     Gets or sets state of the notification. Possible values include:
-        ///     'Cancelled', 'Completed', 'Enqueued', 'Processing', 'Unknown'
-        /// </summary>
         [JsonProperty(PropertyName = "state")]
-        //[JsonConverter(typeof(StringEnumConverter))]
-        public string State { get; set; }
+        public NotificationState State { get; set; }
 
         [JsonConverter(typeof(RuntimePlatformJsonConverter))]
         public RuntimePlatform RuntimePlatform { get; set; }
