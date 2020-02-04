@@ -383,88 +383,19 @@ namespace AppCenter.Push.Server.Tests
 
             var httpClientMock = new HttpClientMock();
             httpClientMock.SetupSendAsync()
-                .ReturnsAsync(HttpResponseMessages.NotificationOverviewResults.Success("notification_id_test", count: 3))
+                .ReturnsAsync(NotificationOverviewResults.Success("notification_id_test", count: 3))
                 .Verifiable();
 
             var appCenterConfiguration = new TestAppCenterConfiguration();
             var pushNotificationService = new AppCenterPushNotificationService(loggerMock.Object, httpClientMock.Object, appCenterConfiguration);
 
             // Act
-            var responseDtos = await pushNotificationService.GetPushNotificationsAsync(top: 30);
+            var notificationOverviewResults = await pushNotificationService.GetPushNotificationsAsync(top: 30);
 
             // Assert
-            this.testOutputHelper.WriteLine($"{ObjectDumper.Dump(responseDtos, DumpStyle.CSharp)}");
+            this.testOutputHelper.WriteLine($"{ObjectDumper.Dump(notificationOverviewResults, DumpStyle.CSharp)}");
 
-            responseDtos.Should().BeEquivalentTo(new List<NotificationOverviewResult>
-                {
-                    new NotificationOverviewResult
-                    {
-                        NotificationId = "notification_id_test_0",
-                        Name = "name_0",
-                        NotificationTarget = null,
-                        SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                        PnsSendFailure = 1,
-                        PnsSendSuccess = 2,
-                        State = null,
-                        RuntimePlatform = RuntimePlatform.Android
-                    },
-                    new NotificationOverviewResult
-                    {
-                        NotificationId = "notification_id_test_1",
-                        Name = "name_1",
-                        NotificationTarget = null,
-                        SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                        PnsSendFailure = 1,
-                        PnsSendSuccess = 2,
-                        State = null,
-                        RuntimePlatform = RuntimePlatform.Android
-                    },
-                    new NotificationOverviewResult
-                    {
-                        NotificationId = "notification_id_test_2",
-                        Name = "name_2",
-                        NotificationTarget = null,
-                        SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                        PnsSendFailure = 1,
-                        PnsSendSuccess = 2,
-                        State = null,
-                        RuntimePlatform = RuntimePlatform.Android
-                    },
-                    new NotificationOverviewResult
-                    {
-                        NotificationId = "notification_id_test_0",
-                        Name = "name_0",
-                        NotificationTarget = null,
-                        SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                        PnsSendFailure = 1,
-                        PnsSendSuccess = 2,
-                        State = null,
-                        RuntimePlatform = RuntimePlatform.iOS
-                    },
-                    new NotificationOverviewResult
-                    {
-                        NotificationId = "notification_id_test_1",
-                        Name = "name_1",
-                        NotificationTarget = null,
-                        SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                        PnsSendFailure = 1,
-                        PnsSendSuccess = 2,
-                        State = null,
-                        RuntimePlatform = RuntimePlatform.iOS
-                    },
-                    new NotificationOverviewResult
-                    {
-                        NotificationId = "notification_id_test_2",
-                        Name = "name_2",
-                        NotificationTarget = null,
-                        SendTime = DateTime.ParseExact("2000-01-01T00:00:00.0000000Z", "O", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                        PnsSendFailure = 1,
-                        PnsSendSuccess = 2,
-                        State = null,
-                        RuntimePlatform = RuntimePlatform.iOS
-                    }
-                }
-            );
+            notificationOverviewResults.Should().BeEquivalentTo(NotificationOverviewResults.GetExample1().Values);
 
             httpClientMock.VerifySendAsync(
                 request => request.Method == HttpMethod.Get &&

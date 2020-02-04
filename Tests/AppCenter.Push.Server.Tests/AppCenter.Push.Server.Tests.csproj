@@ -10,11 +10,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Testdata\NotificationOverviewList_Example1.json" />
+    <None Remove="Testdata\NotificationOverviewResults_Example1.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Testdata\NotificationOverviewList_Example1.json" />
+    <EmbeddedResource Include="Testdata\NotificationOverviewResults_Example1.json" />
   </ItemGroup>
 
   <ItemGroup>

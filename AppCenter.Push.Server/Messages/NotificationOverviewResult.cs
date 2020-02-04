@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace AppCenter.Push.Server.Messages
 {
@@ -18,7 +19,7 @@ namespace AppCenter.Push.Server.Messages
         public AppCenterPushTarget NotificationTarget { get; set; }
 
         [JsonProperty(PropertyName = "send_time")]
-        public DateTime SendTime { get; set; }
+        public string SendTime { get; set; }
 
         [JsonProperty(PropertyName = "pns_send_failure")]
         public int? PnsSendFailure { get; set; }
@@ -31,6 +32,7 @@ namespace AppCenter.Push.Server.Messages
         ///     'Cancelled', 'Completed', 'Enqueued', 'Processing', 'Unknown'
         /// </summary>
         [JsonProperty(PropertyName = "state")]
+        //[JsonConverter(typeof(StringEnumConverter))]
         public string State { get; set; }
 
         [JsonConverter(typeof(RuntimePlatformJsonConverter))]

@@ -38,34 +38,5 @@ namespace AppCenter.Push.Server.Tests.Testdata
             }
         }
 
-        public static class NotificationOverviewResults
-        {
-            public static HttpResponseMessage Success(string notificationId, int count)
-            {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(JsonConvert.SerializeObject(new NotificationOverviewResultInternal
-                    {
-                        Values = GenerateNotificationOverviewResults(notificationId, count).ToList()
-                    }))
-                };
-            }
-
-            private static IEnumerable<NotificationOverviewResult> GenerateNotificationOverviewResults(string notificationId, int count)
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    yield return new NotificationOverviewResult
-                    {
-                        NotificationId = $"{notificationId}_{i}",
-                        Name = $"name_{i}",
-                        PnsSendFailure = 1,
-                        PnsSendSuccess = 2,
-                        SendTime = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc),
-                    };
-                }
-            }
-        }
     }
 }

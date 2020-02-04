@@ -1,6 +1,5 @@
-﻿using System;
-using System.Reflection;
-using AppCenter.Push.Server.Messages;
+﻿using AppCenter.Push.Server.Messages;
+using AppCenter.Push.Server.Tests.Testdata;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Xunit;
@@ -14,7 +13,7 @@ namespace AppCenter.Push.Server.Tests.Internals
         public void ShouldDeserializeNotificationOverviewResultInternal()
         {
             // Arrange
-            var json = ResourceLoader.Current.GetEmbeddedResourceString(this.GetType().Assembly, "NotificationOverviewList_Example1.json");
+            var json = NotificationOverviewResults.GetExample1_Json();
 
             // Act
             var notificationOverviewResultInternal = JsonConvert.DeserializeObject<NotificationOverviewResultInternal>(json);
