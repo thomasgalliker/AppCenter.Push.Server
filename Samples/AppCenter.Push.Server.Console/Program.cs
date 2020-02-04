@@ -6,21 +6,18 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AppCenter.Push.Server.Console.Internals;
 using AppCenter.Push.Server.Messages;
-using AppCenter.Push.Server.Model;
 using Microsoft.Extensions.Configuration;
 
 namespace AppCenter.Push.Server.Console
 {
-    using Console = System.Console;
-
     class Program
     {
         static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            Console.WriteLine($"AppCenter.Push.Server.Console [Version 1.0.0.0]");
-            Console.WriteLine($"(c) 2020 superdev gmbh. All rights reserved.");
+            System.Console.WriteLine($"AppCenter.Push.Server.Console [Version 1.0.0.0]");
+            System.Console.WriteLine($"(c) 2020 superdev gmbh. All rights reserved.");
 
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -48,27 +45,27 @@ namespace AppCenter.Push.Server.Console
             else
             {
                 // Manual configuration
-                Console.WriteLine("");
-                Console.WriteLine($"API Token:");
-                var apiToken = Console.ReadLine();
+                System.Console.WriteLine("");
+                System.Console.WriteLine($"API Token:");
+                var apiToken = System.Console.ReadLine();
                 appCenterConfiguration.ApiToken = apiToken;
 
-                Console.WriteLine("");
-                Console.WriteLine($"Organization Name:");
-                var organizationName = Console.ReadLine();
+                System.Console.WriteLine("");
+                System.Console.WriteLine($"Organization Name:");
+                var organizationName = System.Console.ReadLine();
                 appCenterConfiguration.OrganizationName = organizationName;
 
-                Console.WriteLine("");
-                Console.WriteLine($"App Name [iOS]:");
-                var appNameiOS = Console.ReadLine();
+                System.Console.WriteLine("");
+                System.Console.WriteLine($"App Name [iOS]:");
+                var appNameiOS = System.Console.ReadLine();
 
-                Console.WriteLine("");
-                Console.WriteLine($"App Name [Android]:");
-                var appNameAndroid = Console.ReadLine();
+                System.Console.WriteLine("");
+                System.Console.WriteLine($"App Name [Android]:");
+                var appNameAndroid = System.Console.ReadLine();
 
-                Console.WriteLine("");
-                Console.WriteLine($"App Name [UWP]:");
-                var appNameUWP = Console.ReadLine();
+                System.Console.WriteLine("");
+                System.Console.WriteLine($"App Name [UWP]:");
+                var appNameUWP = System.Console.ReadLine();
 
                 if (!string.IsNullOrEmpty(appNameiOS))
                 {
@@ -86,15 +83,15 @@ namespace AppCenter.Push.Server.Console
                 }
             }
 
-            Console.WriteLine("");
-            Console.WriteLine($"Enter UserIds:");
-            var userIdsInput = Console.ReadLine();
+            System.Console.WriteLine("");
+            System.Console.WriteLine($"Enter UserIds:");
+            var userIdsInput = System.Console.ReadLine();
             var userIds = userIdsInput?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
 
-            Console.WriteLine("");
-            Console.WriteLine("Press [Enter] to send push notifications: ");
-            Console.ReadLine();
-            Console.Clear();
+            System.Console.WriteLine("");
+            System.Console.WriteLine("Press [Enter] to send push notifications: ");
+            System.Console.ReadLine();
+            System.Console.Clear();
 
             try
             {
@@ -102,14 +99,15 @@ namespace AppCenter.Push.Server.Console
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                System.Console.WriteLine(e.Message);
             }
-            Console.ReadKey();
+
+            System.Console.ReadKey();
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Console.WriteLine($"{e.ExceptionObject}");
+            System.Console.WriteLine($"{e.ExceptionObject}");
         }
 
         private static async Task SendPushNotificationAsync(IAppCenterConfiguration appCenterConfiguration, List<string> userIds)
@@ -136,32 +134,51 @@ namespace AppCenter.Push.Server.Console
             var appCenterPushResponses = await appCenterPushNotificationService.SendPushNotificationAsync(pushMessage);
             if (appCenterPushResponses.Any())
             {
-                Console.WriteLine("");
-                Console.WriteLine("AppCenter responses:");
-                Console.WriteLine("====================");
+                System.Console.WriteLine("");
+                System.Console.WriteLine("SendPushNotificationAsync responses:");
+                System.Console.WriteLine("------------------------------------");
                 foreach (var appCenterPushResponse in appCenterPushResponses)
                 {
                     if (appCenterPushResponse is AppCenterPushSuccess success)
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"--> {appCenterConfiguration.AppNames[success.RuntimePlatform]}: {success.NotificationId}");
-                        Console.ForegroundColor = ConsoleColor.Gray;
+                        System.Console.ForegroundColor = ConsoleColor.Green;
+                        System.Console.WriteLine($"--> {appCenterConfiguration.AppNames[success.RuntimePlatform]}: {success.NotificationId}");
+                        System.Console.ForegroundColor = ConsoleColor.Gray;
                     }
                     else if (appCenterPushResponse is AppCenterPushError error)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"--> {appCenterConfiguration.AppNames[error.RuntimePlatform]}: Code={error.ErrorCode}, Message={error.ErrorMessage}");
-                        Console.ForegroundColor = ConsoleColor.Gray;
+                        System.Console.ForegroundColor = ConsoleColor.Red;
+                        System.Console.WriteLine($"--> {appCenterConfiguration.AppNames[error.RuntimePlatform]}: Code={error.ErrorCode}, Message={error.ErrorMessage}");
+                        System.Console.ForegroundColor = ConsoleColor.Gray;
                     }
                 }
             }
             else
             {
-                Console.WriteLine("");
-                Console.WriteLine("No responses from AppCenter.");
+                System.Console.WriteLine("");
+                System.Console.WriteLine("No responses from AppCenter.");
             }
-        
-            Console.ReadKey();
+
+            System.Console.WriteLine("");
+            System.Console.WriteLine("GetPushNotificationsAsync:");
+            System.Console.WriteLine("--------------------------");
+            System.Console.WriteLine("");
+            var notificationOverviewResults = await appCenterPushNotificationService.GetPushNotificationsAsync();
+            if (notificationOverviewResults.Any())
+            {
+                System.Console.WriteLine($"NotificationId\t\t\t\t\t| State\t\t| Success\t| Failure");
+                foreach (var result in notificationOverviewResults)
+                {
+                    System.Console.WriteLine($"{result.NotificationId}\t| {result.State}\t| {result.PnsSendSuccess}\t\t| {result.PnsSendFailure}");
+                }
+            }
+            else
+            {
+                System.Console.WriteLine("");
+                System.Console.WriteLine("No responses from AppCenter.");
+            }
+
+            System.Console.ReadKey();
         }
     }
 }
