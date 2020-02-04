@@ -15,6 +15,11 @@ namespace AppCenter.Push.Server
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            if (existingValue == null)
+            {
+                return null;
+            }
+
             var jObject = JObject.Load(reader);
 
             var target = this.Create(objectType, jObject);
