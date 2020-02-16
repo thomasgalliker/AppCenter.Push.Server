@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using AppCenter.Push.Server.Logging;
 using AppCenter.Push.Server.Messages;
-using AppCenter.Push.Server.Model;
 using Newtonsoft.Json;
 
 namespace AppCenter.Push.Server
@@ -15,6 +14,7 @@ namespace AppCenter.Push.Server
         private readonly ILogger logger;
         private readonly HttpClient httpClient;
         private readonly IAppCenterConfiguration appCenterConfiguration;
+        private readonly JsonSerializerSettings jsonSerializerSettings;
 
         public AppCenterPushNotificationService(IAppCenterConfiguration appCenterConfiguration)
             : this(Logger.Current, new HttpClient(), appCenterConfiguration)
@@ -26,6 +26,16 @@ namespace AppCenter.Push.Server
             this.logger = logger;
             this.httpClient = httpClient;
             this.appCenterConfiguration = this.EnsureConfig(appCenterConfiguration);
+
+            var apiToken = this.appCenterConfiguration.ApiToken;
+            this.httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-API-Token", apiToken);
+
+            this.jsonSerializerSettings = new JsonSerializerSettings
+            {
+                DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                DateParseHandling = DateParseHandling.DateTime,
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+            };
         }
 
         private IAppCenterConfiguration EnsureConfig(IAppCenterConfiguration config)
@@ -51,6 +61,15 @@ namespace AppCenter.Push.Server
             return config;
         }
 
+        /// <summary>
+        ///     Sends <paramref name="appCenterPushMessage" /> to AppCenter API
+        ///     /v0.1​/apps​/{owner_name}​/{app_name}​/push​/notifications
+        /// </summary>
+        /// <param name="appCenterPushMessage"></param>
+        /// <returns>
+        ///     Returns a <seealso cref="AppCenterPushResponse" /> for each target runtime platform.
+        ///     This can either be <seealso cref="AppCenterPushSuccess" /> or <seealso cref="AppCenterPushError" />.
+        /// </returns>
         public async Task<IEnumerable<AppCenterPushResponse>> SendPushNotificationAsync(AppCenterPushMessage appCenterPushMessage)
         {
             if (appCenterPushMessage == null)
@@ -61,13 +80,7 @@ namespace AppCenter.Push.Server
             this.logger.Log(LogLevel.Debug, "SendPushNotificationAsync");
             var pushResponses = new List<AppCenterPushResponse>();
 
-            //if (!this.appCenterConfiguration.AppNames.TryGetValue(target.TargetDevicePlatform, out var appName, StringComparison.InvariantCultureIgnoreCase))
-            //{
-            //    this.logger.Log(LogLevel.Warning, "App Center app name not found for " + target.TargetDevicePlatform);
-            //}
-
             var organizationName = this.appCenterConfiguration.OrganizationName;
-            var apiToken = this.appCenterConfiguration.ApiToken;
             var appNames = this.appCenterConfiguration.AppNames;
 
             foreach (var appNameMappings in appNames)
@@ -79,20 +92,19 @@ namespace AppCenter.Push.Server
                     var requestUri = $"https://appcenter.ms/api/v0.1/apps/{organizationName}/{appName}/push/notifications";
                     this.logger.Log(LogLevel.Debug, $"SendPushNotificationAsync with requestUri={requestUri}");
 
-                    var serialized = JsonConvert.SerializeObject(appCenterPushMessage);
+                    var serialized = JsonConvert.SerializeObject(appCenterPushMessage, this.jsonSerializerSettings);
                     var httpContent = new StringContent(serialized, Encoding.UTF8, "application/json");
-                    httpContent.Headers.TryAddWithoutValidation("X-API-Token", apiToken);
 
                     var httpResponseMessage = await this.httpClient.PostAsync(requestUri, httpContent);
 
                     var jsonResponse = await httpResponseMessage.Content.ReadAsStringAsync();
                     if (httpResponseMessage.IsSuccessStatusCode)
                     {
-                        appCenterPushResponse = JsonConvert.DeserializeObject<AppCenterPushSuccess>(jsonResponse);
+                        appCenterPushResponse = JsonConvert.DeserializeObject<AppCenterPushSuccess>(jsonResponse, this.jsonSerializerSettings);
                     }
                     else
                     {
-                        appCenterPushResponse = JsonConvert.DeserializeObject<AppCenterPushError>(jsonResponse);
+                        appCenterPushResponse = JsonConvert.DeserializeObject<AppCenterPushError>(jsonResponse, this.jsonSerializerSettings);
                     }
                 }
                 catch (Exception ex)
@@ -112,6 +124,56 @@ namespace AppCenter.Push.Server
             }
 
             return pushResponses;
+        }
+
+        /// <summary>
+        ///     Gets a list of <seealso cref="AppCenterPushContent"/> from AppCenter API
+        ///     /v0.1​/apps​/{owner_name}​/{app_name}​/push​/notifications
+        /// </summary>
+        /// <returns>
+        ///     Returns a <seealso cref="AppCenterPushContent" /> for each target runtime platform.
+        /// </returns>
+        public async Task<IEnumerable<NotificationOverviewResult>> GetPushNotificationsAsync(int top = 30)
+        {
+            this.logger.Log(LogLevel.Debug, "GetPushNotificationsAsync");
+            var notificationOverviewResults = new List<NotificationOverviewResult>();
+
+            var organizationName = this.appCenterConfiguration.OrganizationName;
+            var appNames = this.appCenterConfiguration.AppNames;
+
+            foreach (var appNameMappings in appNames)
+            {
+                try
+                {
+                    var appName = appNameMappings.Value;
+                    var queryParameters = $"%24top={top:D}&%24orderby=count%20desc&%24inlinecount=none";
+                    var requestUri = $"https://appcenter.ms/api/v0.1/apps/{organizationName}/{appName}/push/notifications?{queryParameters}";
+                    this.logger.Log(LogLevel.Debug, $"GetPushNotificationsAsync with requestUri={requestUri}");
+
+                    var httpResponseMessage = await this.httpClient.GetAsync(requestUri);
+
+                    var jsonResponse = await httpResponseMessage.Content.ReadAsStringAsync();
+                    if (httpResponseMessage.IsSuccessStatusCode)
+                    {
+                        var result = JsonConvert.DeserializeObject<NotificationOverviewResultInternal>(jsonResponse, this.jsonSerializerSettings);
+                        foreach (var notificationOverviewResult in result.Values)
+                        {
+                            notificationOverviewResult.RuntimePlatform = appNameMappings.Key;
+                        }
+                        notificationOverviewResults.AddRange(result.Values);
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var errorMessage = $"GetPushNotificationsAsync failed with exception: {ex.Message}";
+                    this.logger.Log(LogLevel.Error, errorMessage);
+
+                    throw new Exception(errorMessage, ex);
+                }
+            }
+
+            return notificationOverviewResults;
         }
     }
 }

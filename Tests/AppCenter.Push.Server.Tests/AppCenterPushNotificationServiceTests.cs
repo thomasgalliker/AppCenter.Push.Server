@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AppCenter.Push.Server.Logging;
 using AppCenter.Push.Server.Messages;
-using AppCenter.Push.Server.Model;
 using AppCenter.Push.Server.Tests.Mocks;
 using AppCenter.Push.Server.Tests.Testdata;
 using FluentAssertions;
@@ -33,7 +33,7 @@ namespace AppCenter.Push.Server.Tests
 
             var httpClientMock = new HttpClientMock();
             httpClientMock.SetupSendAsync()
-                .ReturnsAsync(HttpResponseMessages.Success("notification_id_test"))
+                .ReturnsAsync(HttpResponseMessages.AppCenterPushResponses.Success("notification_id_test"))
                 .Verifiable();
 
             var appCenterConfiguration = new TestAppCenterConfiguration();
@@ -80,7 +80,7 @@ namespace AppCenter.Push.Server.Tests
                 Times.Exactly(1)
             );
         }
-        
+
         [Fact]
         public async Task ShouldSendPushNotificationAsync_AccountIdsTarget_Unauthorized()
         {
@@ -89,7 +89,7 @@ namespace AppCenter.Push.Server.Tests
 
             var httpClientMock = new HttpClientMock();
             httpClientMock.SetupSendAsync()
-                .ReturnsAsync(HttpResponseMessages.Unauthorized("errorMessage", "errorCode"))
+                .ReturnsAsync(HttpResponseMessages.AppCenterPushResponses.Unauthorized("errorMessage", "errorCode"))
                 .Verifiable();
 
             var appCenterConfiguration = new TestAppCenterConfiguration();
@@ -143,7 +143,7 @@ namespace AppCenter.Push.Server.Tests
                 Times.Exactly(1)
             );
         }
-        
+
         [Fact]
         public async Task ShouldSendPushNotificationAsync_AccountIdsTarget_ThrowsException()
         {
@@ -215,7 +215,7 @@ namespace AppCenter.Push.Server.Tests
 
             var httpClientMock = new HttpClientMock();
             httpClientMock.SetupSendAsync()
-                .ReturnsAsync(HttpResponseMessages.Success("notification_id_test"))
+                .ReturnsAsync(HttpResponseMessages.AppCenterPushResponses.Success("notification_id_test"))
                 .Verifiable();
 
             var appCenterConfiguration = new TestAppCenterConfiguration();
@@ -271,7 +271,7 @@ namespace AppCenter.Push.Server.Tests
 
             var httpClientMock = new HttpClientMock();
             httpClientMock.SetupSendAsync()
-                .ReturnsAsync(HttpResponseMessages.Success("notification_id_test"))
+                .ReturnsAsync(HttpResponseMessages.AppCenterPushResponses.Success("notification_id_test"))
                 .Verifiable();
 
             var appCenterConfiguration = new TestAppCenterConfiguration();
@@ -327,7 +327,7 @@ namespace AppCenter.Push.Server.Tests
 
             var httpClientMock = new HttpClientMock();
             httpClientMock.SetupSendAsync()
-                .ReturnsAsync(HttpResponseMessages.Success("notification_id_test"))
+                .ReturnsAsync(HttpResponseMessages.AppCenterPushResponses.Success("notification_id_test"))
                 .Verifiable();
 
             var appCenterConfiguration = new TestAppCenterConfiguration();
@@ -371,6 +371,40 @@ namespace AppCenter.Push.Server.Tests
             httpClientMock.VerifySendAsync(
                 request => request.Method == HttpMethod.Post &&
                            request.RequestUri == new Uri("https://appcenter.ms/api/v0.1/apps/testOrg/TestApp.iOS/push/notifications"),
+                Times.Exactly(1)
+            );
+        }
+
+        [Fact]
+        public async Task ShouldGetPushNotificationsAsync_All()
+        {
+            // Arrange
+            var loggerMock = new Mock<ILogger>();
+
+            var httpClientMock = new HttpClientMock();
+            httpClientMock.SetupSendAsync()
+                .ReturnsAsync(NotificationOverviewResults.Success("notification_id_test", count: 3))
+                .Verifiable();
+
+            var appCenterConfiguration = new TestAppCenterConfiguration();
+            var pushNotificationService = new AppCenterPushNotificationService(loggerMock.Object, httpClientMock.Object, appCenterConfiguration);
+
+            // Act
+            var notificationOverviewResults = await pushNotificationService.GetPushNotificationsAsync(top: 30);
+
+            // Assert
+            this.testOutputHelper.WriteLine($"{ObjectDumper.Dump(notificationOverviewResults, DumpStyle.CSharp)}");
+
+            notificationOverviewResults.Should().BeEquivalentTo(NotificationOverviewResults.GetExample1().Values);
+
+            httpClientMock.VerifySendAsync(
+                request => request.Method == HttpMethod.Get &&
+                           request.RequestUri == new Uri("https://appcenter.ms/api/v0.1/apps/testOrg/TestApp.Android/push/notifications?%24top=30&%24orderby=count%20desc&%24inlinecount=none"),
+                Times.Exactly(1)
+            );
+            httpClientMock.VerifySendAsync(
+                request => request.Method == HttpMethod.Get &&
+                           request.RequestUri == new Uri("https://appcenter.ms/api/v0.1/apps/testOrg/TestApp.iOS/push/notifications?%24top=30&%24orderby=count%20desc&%24inlinecount=none"),
                 Times.Exactly(1)
             );
         }

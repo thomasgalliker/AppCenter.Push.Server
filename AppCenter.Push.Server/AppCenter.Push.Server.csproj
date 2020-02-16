@@ -6,7 +6,7 @@
     <VersionPrefix>1.0.0</VersionPrefix>
     <Version>1.0.0</Version>
     <Authors>Thomas Galliker</Authors>
-    <TargetFrameworks>netstandard1.2;netstandard2.0;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
     <AssemblyName>AppCenter.Push.Server</AssemblyName>
     <PackageId>AppCenter.Push.Server</PackageId>
     <PackageTags>AppCenter.Push;AppCenter.Push.Server;push;notification</PackageTags>
@@ -16,8 +16,6 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/thomasgalliker/AppCenter.Push.Server</RepositoryUrl>
     <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
-    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.2' ">$(PackageTargetFallback);netcoreapp1.0</PackageTargetFallback>
-    <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.2' ">1.6.1</NetStandardImplicitPackageVersion>
     <SignAssembly>True</SignAssembly>
   </PropertyGroup>
 
@@ -34,8 +32,9 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <RootNamespace>AppCenter.Push.Server</RootNamespace>
     <PackageReleaseNotes>1.0.0
-      - Initial release
-    </PackageReleaseNotes>
+- Initial release
+- Send push notifications to targets: accountids, audiences, devices, userids
+- Get list of sent push notifications</PackageReleaseNotes>
     <Copyright>Copyright 2020</Copyright>
   </PropertyGroup>
 
@@ -49,7 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="[11.0.1,)" />
+    <PackageReference Include="Newtonsoft.Json" Version="[12.0.3,)" />
   </ItemGroup>
 
 </Project>

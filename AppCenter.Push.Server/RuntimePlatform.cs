@@ -12,7 +12,7 @@ namespace AppCenter.Push.Server
 
         private readonly string value;
 
-        public RuntimePlatform(string value)
+        public RuntimePlatform(string value = null)
         {
             this.value = value;
         }

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Newtonsoft.Json;
 
-namespace AppCenter.Push.Server.Model
+namespace AppCenter.Push.Server.Messages
 {
     [JsonObject]
     public class AppCenterPushResponse
